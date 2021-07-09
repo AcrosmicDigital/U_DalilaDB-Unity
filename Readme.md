@@ -55,6 +55,25 @@ A document based NoSql database for use in local applications.
 
 ### Elements
 
+DalilaDB elements are the simpliest way to store data, you can store any serializable type in a key - value mode.
+
+1. First a Elements class is nedded, so create a new Folder
+
+```C#
+
+
+
+
+```
+
 ### Document
 
 ### Collection
+
+### Volatile Stores
+
+```C#
+
+
+
+```
