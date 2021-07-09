@@ -23,23 +23,33 @@ A document based NoSql database for use in local applications.
     - "/Editor" folder
     - "/Runtime" folder
 
-![DalilaDBInstallation](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBInstallation1.JPG)
+![DalilaDBInstallation1](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBInstallation1.JPG)
 
-5. If this log appear in Unity console just delete it "Assembly for Assembly Definition File 'Assets/DalilaDB/U.DalilaDB.asmdef' will not be compiled, because it has no scripts associated with it."
-6. If this log appear continue anyway "Assets\DalilaDB\Editor\SavedDataEditorWindow.cs(8,7): error CS0246: The type or namespace name 'U' could not be found (are you missing a using directive or an assembly reference?)"
+5. If ok if this log appear in Unity console "Assembly for Assembly Definition File 'Assets/DalilaDB/U.DalilaDB.asmdef' will not be compiled, because it has no scripts associated with it."
 
 ![DalilaDBInstallation2](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBInstallation2.JPG)
 
-7. Inside Assets/DalilaDB/Editor delete the file "U.DalilaDB.Editor.asmdef"
+6. Wait while Unity compiles the files 
+7. Delete all logs in console
+8. When finish "U" button must appear in Menu Bar
 
 ![DalilaDBInstallation3](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBInstallation3.JPG)
 
-8. Wait while Unity compiles the files and delete all logs in console
-9. When finish "U" button appear in Menu Bar
-10. If button "U" is there and any logs are in console the installation was successful
+9. Create and open a new scene just for test purpouse
+10. Inside this scene create a empty GameObject
 
 ![DalilaDBInstallation4](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBInstallation4.JPG)
 
+11. To this GameObject add the component named "DalilaDBTest" located in Assets/DalilaDB/Editor
+
+![DalilaDBInstallation5](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBInstallation5.JPG)
+
+12. Play the scene and in console must appear a log saying "DalilaDB: Successful test", if you can see this log the installation was successfully
+
+![DalilaDBInstallation6](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBInstallation6.JPG)
+
+13. Now you can delete the Test GameObject and/or Test Scene
+14. If something went wrong, please create a new issue with logs and Unity version
 
 ## Basic Usage
 
