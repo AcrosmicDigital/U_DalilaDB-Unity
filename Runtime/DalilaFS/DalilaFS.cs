@@ -74,7 +74,7 @@ namespace U.DalilaDB
         /// <returns></returns>
         public static bool IsValidResource(string resource)
         {
-
+            
             // Cant be null or empty
             if (String.IsNullOrEmpty(resource))
                 return false;

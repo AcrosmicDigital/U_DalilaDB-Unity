@@ -18,22 +18,26 @@ namespace U.DalilaDB
     public partial class DalilaFS
     {
 
-        public DataOperation CreateDCResource<TResource>(string resource, TResource file) 
+        public DataOperation CreateDCResource<TResource>(string resourceName, TResource serializableResource) 
             
             where TResource : class
 
         {
 
+            // If encryption enabled, use encrypted methods
+            if(_aesEncryption)
+                return CreateEncryDCResource(resourceName, serializableResource);
+
             var operation = new DataOperation();
             string path; // full path
 
-            if (file == null)
+            if (serializableResource == null)
                 return operation.Fails(new ArgumentNullException("File to save cant be null"));
 
             // Validate the Name
             try
             {
-                path = ResourceToSystemPath(resource);
+                path = ResourceToSystemPath(resourceName);
             }
             catch (Exception e)
             {
@@ -42,7 +46,7 @@ namespace U.DalilaDB
 
 
             // Check if the path exist or create it, if cant create return the error
-            var locationCreateOperation = CreateLocation(GetResourceLocation(resource));
+            var locationCreateOperation = CreateLocation(GetResourceLocation(resourceName));
             if (!locationCreateOperation)
                 return locationCreateOperation;
 
@@ -55,7 +59,7 @@ namespace U.DalilaDB
                     DataContractSerializer ser = new DataContractSerializer(typeof(TResource));
 
                     // Intentar serializar
-                    ser.WriteObject(writer, file);
+                    ser.WriteObject(writer, serializableResource);
 
                     return operation.Successful("1");
 
@@ -68,46 +72,64 @@ namespace U.DalilaDB
 
         }
 
-        public DataOperation SaveDCResource<TResource>(string resource, TResource file) 
+        public DataOperation SaveDCResource<TResource>(string resourceName, TResource serializableResource) 
             
             where TResource : class
 
         {
+            // If encryption enabled, use encrypted methods
+            if (_aesEncryption)
+            {
+                return SaveEncryDCResource(resourceName, serializableResource);
+            }
+
             var operation = new DataOperation();
 
-            if (ExistResource(resource))
+            if (ExistResource(resourceName))
                 return operation.Fails(new DuplicateNameException());
             else
-                return CreateDCResource(resource, file);
+                return CreateDCResource(resourceName, serializableResource);
 
         }
 
-        public DataOperation ReplaceDCResource<TResource>(string resource, TResource file) 
+        public DataOperation ReplaceDCResource<TResource>(string resourceName, TResource serializableResource) 
             
             where TResource : class
 
         {
+            // If encryption enabled, use encrypted methods
+            if (_aesEncryption)
+            {
+                return ReplaceEncryDCResource(resourceName, serializableResource);
+            }
+
             var operation = new DataOperation();
 
-            if (!ExistResource(resource))
+            if (!ExistResource(resourceName))
                 return operation.Fails(new Exception());
             else
-                return CreateDCResource(resource, file);
+                return CreateDCResource(resourceName, serializableResource);
 
         }
 
-        public DataOperation<TResource> ReadDCResource<TResource>(string resource)
+        public DataOperation<TResource> ReadDCResource<TResource>(string resourceName)
             
             where TResource : class
 
         {
+            // If encryption enabled, use encrypted methods
+            if (_aesEncryption)
+            {
+                return ReadEncryDCResource<TResource>(resourceName);
+            }
+
             var operation = new DataOperation<TResource>();
             string path; // full path
 
             // Validate the Name
             try
             {
-                path = ResourceToSystemPath(resource);
+                path = ResourceToSystemPath(resourceName);
             }
             catch (Exception e)
             {
@@ -147,12 +169,19 @@ namespace U.DalilaDB
 
         }
 
-        public DataOperation<TResource> ReadOrDeleteDCResource<TResource>(string resource)
+        public DataOperation<TResource> ReadOrDeleteDCResource<TResource>(string resourceName)
 
             where TResource : class
 
         {
-            var operation = ReadDCResource<TResource>(resource);
+            // If encryption enabled, use encrypted methods
+            if (_aesEncryption)
+            {
+                return ReadOrDeleteEncryDCResource<TResource>(resourceName);
+            }
+
+
+            var operation = ReadDCResource<TResource>(resourceName);
 
             if (!operation)
             {
@@ -162,7 +191,7 @@ namespace U.DalilaDB
                 }
                 catch (InvalidCastException)
                 {
-                    DeleteResource(resource);
+                    DeleteResource(resourceName);
                 }
                 catch (Exception)
                 {
@@ -174,9 +203,9 @@ namespace U.DalilaDB
             return operation;
         }
 
-        //--
 
-        public DataOperation CreateEncryDCResource<TResource>(string resource, TResource file)
+
+        protected DataOperation CreateEncryDCResource<TResource>(string resourceName, TResource serializableResource)
 
             where TResource : class
 
@@ -185,13 +214,13 @@ namespace U.DalilaDB
             var operation = new DataOperation();
             string path; // full path
 
-            if (file == null)
+            if (serializableResource == null)
                 return operation.Fails(new ArgumentNullException("File to save cant be null"));
 
             // Validate the Name
             try
             {
-                path = ResourceToSystemPath(resource);
+                path = ResourceToSystemPath(resourceName);
             }
             catch (Exception e)
             {
@@ -200,7 +229,7 @@ namespace U.DalilaDB
 
 
             // Check if the path exist or create it, if cant create return the error
-            var locationCreateOperation = CreateLocation(GetResourceLocation(resource));
+            var locationCreateOperation = CreateLocation(GetResourceLocation(resourceName));
             if (!locationCreateOperation)
                 return locationCreateOperation;
 
@@ -235,7 +264,7 @@ namespace U.DalilaDB
                                     // Create the data contract serializer of specified type
                                     //Write all data to the stream.
                                     DataContractSerializer ser = new DataContractSerializer(typeof(TResource));
-                                    ser.WriteObject(msStream, file);
+                                    ser.WriteObject(msStream, serializableResource);
                                     msStream.Position = 0;
 
                                     using (StreamReader reader = new StreamReader(msStream))
@@ -261,35 +290,35 @@ namespace U.DalilaDB
 
         }
 
-        public DataOperation SaveEncryDCResource<TResource>(string resource, TResource file)
+        protected DataOperation SaveEncryDCResource<TResource>(string resourceName, TResource serializableResource)
 
             where TResource : class
 
         {
             var operation = new DataOperation();
 
-            if (ExistResource(resource))
+            if (ExistResource(resourceName))
                 return operation.Fails(new DuplicateNameException());
             else
-                return CreateDCResource(resource, file);
+                return CreateEncryDCResource(resourceName, serializableResource);
 
         }
 
-        public DataOperation ReplaceEncryDCResource<TResource>(string resource, TResource file)
+        protected DataOperation ReplaceEncryDCResource<TResource>(string resourceName, TResource serializableResource)
 
             where TResource : class
 
         {
             var operation = new DataOperation();
 
-            if (!ExistResource(resource))
+            if (!ExistResource(resourceName))
                 return operation.Fails(new Exception());
             else
-                return CreateDCResource(resource, file);
+                return CreateEncryDCResource(resourceName, serializableResource);
 
         }
 
-        public DataOperation<TResource> ReadEncryDCResource<TResource>(string resource)
+        protected DataOperation<TResource> ReadEncryDCResource<TResource>(string resourceName)
 
             where TResource : class
 
@@ -300,7 +329,7 @@ namespace U.DalilaDB
             // Validate the Name
             try
             {
-                path = ResourceToSystemPath(resource);
+                path = ResourceToSystemPath(resourceName);
             }
             catch (Exception e)
             {
@@ -365,12 +394,12 @@ namespace U.DalilaDB
 
         }
 
-        public DataOperation<TResource> ReadOrDeleteEncryDCResource<TResource>(string resource)
+        protected DataOperation<TResource> ReadOrDeleteEncryDCResource<TResource>(string resourceName)
 
             where TResource : class
 
         {
-            var operation = ReadDCResource<TResource>(resource);
+            var operation = ReadEncryDCResource<TResource>(resourceName);
 
             if (!operation)
             {
@@ -380,7 +409,7 @@ namespace U.DalilaDB
                 }
                 catch (InvalidCastException)
                 {
-                    DeleteResource(resource);
+                    DeleteResource(resourceName);
                 }
                 catch (Exception)
                 {
@@ -392,9 +421,9 @@ namespace U.DalilaDB
             return operation;
         }
 
-        //--
 
-        public static DataOperation<TResource> CloneDCResource<TResource>(TResource file)
+
+        public static DataOperation<TResource> CloneDCResource<TResource>(TResource serializableResource)
 
             where TResource : class
 
@@ -402,7 +431,7 @@ namespace U.DalilaDB
 
             var operation = new DataOperation<TResource>();
 
-            if (file == null)
+            if (serializableResource == null)
                 return operation.Fails(null, new ArgumentNullException("Object to clone cant be null"));
 
 
@@ -414,7 +443,7 @@ namespace U.DalilaDB
                     DataContractSerializer ser = new DataContractSerializer(typeof(TResource));
 
                     // Intentar serializar
-                    ser.WriteObject(writer, file);
+                    ser.WriteObject(writer, serializableResource);
 
                     writer.Position = 0;
 

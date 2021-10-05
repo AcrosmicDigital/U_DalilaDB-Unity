@@ -106,46 +106,6 @@ namespace DalilaFsTests
 
 
 
-        [Test]
-        public void DalilaFS_DCSerialization_Y1CreateEncryAndReadSimplePasses()
-        {
-
-            // Create a new instance of a dc serializable class and store the name in a variable
-            var file = new SampleDCSerializableClass
-            {
-                id = 2233,
-                name = "Andrew",
-                age = 23,
-            };
-            var fileName = "/Sample.xml";
-
-            // Save the class
-            var saveOpp = fs.CreateEncryDCResource(fileName, file);
-            Debug.Log(saveOpp);
-            Assert.IsTrue(saveOpp);
-            //Assert.IsTrue(fs.ExistResource("/Sample.xml"));
-
-
-            // Read the class saved
-            var readOpp = fs.ReadEncryDCResource<SampleDCSerializableClass>(fileName);
-            Debug.Log(readOpp);
-
-            //Display the original data and the decrypted data.
-            Debug.Log("Original  : " + file.id + " " + file.name + " " + file.age);
-            Debug.Log("Readed    : " + readOpp.Data.id + " " + readOpp.Data.name + " " + readOpp.Data.age);
-
-            // Compare the values of the two classes
-            Assert.AreEqual(file.id, readOpp.Data.id);
-            Assert.AreEqual(file.name, readOpp.Data.name);
-            Assert.AreEqual(file.age, readOpp.Data.age);
-            //Assert.IsTrue(fs.ExistResource("/Sample.xml"));
-
-
-
-        }
-
-
-
 
 
         [Test]
