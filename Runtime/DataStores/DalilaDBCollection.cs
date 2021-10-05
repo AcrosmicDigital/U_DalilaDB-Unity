@@ -175,7 +175,7 @@ namespace U.DalilaDB
                 }
             }
 
-            var cloneOpp = DalilaFS.CloneResource(document);
+            var cloneOpp = DalilaFS.CloneDCResource(document);
 
             if (!cloneOpp)
                 return;
@@ -197,7 +197,7 @@ namespace U.DalilaDB
             if (!cacheStore.TryGetValue(key, out var file))
                 return new DataOperation<TCollection>().Fails(null, new FileNotFoundException());
 
-            return DalilaFS.CloneResource(file);
+            return DalilaFS.CloneDCResource(file);
         }
 
         private static DataOperation<TCollection> CacheReadOne(Func<TCollection, bool> predicate)
@@ -222,7 +222,7 @@ namespace U.DalilaDB
             }).Select(d => d.Value).FirstOrDefault();
 
             if (hotElement != null)
-                return DalilaFS.CloneResource(hotElement);
+                return DalilaFS.CloneDCResource(hotElement);
 
             return new DataOperation<TCollection>().Fails(null, new FileNotFoundException());
 
@@ -302,7 +302,7 @@ namespace U.DalilaDB
 
                 var operation = new DataOperation();
 
-                var opp = _fileSystem.CreateResource(ResourceLocation(_id), (TCollection)this);
+                var opp = _fileSystem.CreateDCResource(ResourceLocation(_id), (TCollection)this);
 
                 if (opp) CacheAdd(ResourceLocation(_id), (TCollection)this);  // Add to the hot dictionary
                 else CacheRemove(ResourceLocation(_id));
@@ -344,7 +344,7 @@ namespace U.DalilaDB
             return _taskQueue.StartNew(() =>
             {
 
-                var opp = _fileSystem.ReadOrDeleteResource<TCollection>(ResourceLocation(id));
+                var opp = _fileSystem.ReadOrDeleteDCResource<TCollection>(ResourceLocation(id));
 
                 if (opp)
                 {
@@ -405,7 +405,7 @@ namespace U.DalilaDB
 
                         // If cant read from cache, read from a file
                         if (!readOperation)
-                            readOperation = _fileSystem.ReadOrDeleteResource<TCollection>(resourceName);
+                            readOperation = _fileSystem.ReadOrDeleteDCResource<TCollection>(resourceName);
 
                         if (readOperation)
                         {
@@ -492,7 +492,7 @@ namespace U.DalilaDB
                     tasks.Add(_secondTaskQueue.StartNew(() =>
                     {
 
-                        var readOperation = _fileSystem.ReadOrDeleteResource<TCollection>(resourceName);
+                        var readOperation = _fileSystem.ReadOrDeleteDCResource<TCollection>(resourceName);
 
                         if (readOperation)
                         {
@@ -578,7 +578,7 @@ namespace U.DalilaDB
                     return operation.Fails(new ArgumentNullException("_id cant be null for Update"));
 
 
-                var opp = _fileSystem.ReplaceResource(ResourceLocation(_id), this);
+                var opp = _fileSystem.ReplaceDCResource(ResourceLocation(_id), this);
 
                 if (opp) CacheAdd(ResourceLocation(_id), (TCollection)this);  // Add to the hot dictionary
                 else CacheRemove(ResourceLocation(_id));

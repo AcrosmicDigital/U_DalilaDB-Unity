@@ -122,7 +122,7 @@ namespace U.DalilaDB
             if (!CacheSize)
                 return;
 
-            var cloneOpp = DalilaFS.CloneResource(document);
+            var cloneOpp = DalilaFS.CloneDCResource(document);
 
             if (!cloneOpp)
                 return;
@@ -139,7 +139,7 @@ namespace U.DalilaDB
         private static DataOperation<TDocument> CacheRead()
         {
             if (cacheStore != null)
-                return DalilaFS.CloneResource(cacheStore);
+                return DalilaFS.CloneDCResource(cacheStore);
             else
                 return new DataOperation<TDocument>().Fails(null, new FileNotFoundException());
         }
@@ -175,7 +175,7 @@ namespace U.DalilaDB
             return _taskQueue.StartNew(() =>
             {
                 
-                var opp = _fileSystem.CreateResource(ResourceLocation, (TDocument)this);
+                var opp = _fileSystem.CreateDCResource(ResourceLocation, (TDocument)this);
 
                 // Try to save the hotDocument
                 if(opp) CacheAdd((TDocument)this);
@@ -201,7 +201,7 @@ namespace U.DalilaDB
                     return hotOpp;
 
                 // Read from file
-                var opp = _fileSystem.ReadOrDeleteResource<TDocument>(ResourceLocation);
+                var opp = _fileSystem.ReadOrDeleteDCResource<TDocument>(ResourceLocation);
 
                 if (opp)
                 {
@@ -225,7 +225,7 @@ namespace U.DalilaDB
             return _taskQueue.StartNew(() =>
             {
 
-                var opp = _fileSystem.ReplaceResource(ResourceLocation, (TDocument)this);
+                var opp = _fileSystem.ReplaceDCResource(ResourceLocation, (TDocument)this);
 
                 // Try to save the hotDocument
                 if (opp) CacheAdd((TDocument)this);

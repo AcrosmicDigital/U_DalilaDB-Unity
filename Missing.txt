@@ -9,7 +9,5 @@
 
 - Missing some volatile stores tests
 
-- Name change from DalilaDB to daliladb
-
 - Hash functions to store passwords
  

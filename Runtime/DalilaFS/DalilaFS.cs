@@ -8,7 +8,7 @@ using System.IO;
 
 namespace U.DalilaDB
 {
-    internal partial class DalilaFS
+    public partial class DalilaFS
     {
        
         protected string root_; // Root Path for the fileSystem

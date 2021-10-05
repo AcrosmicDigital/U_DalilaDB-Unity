@@ -132,7 +132,7 @@ namespace U.DalilaDB
 
 
             // Clone the object
-            var cloneOpp = DalilaFS.CloneResource(file);
+            var cloneOpp = DalilaFS.CloneDCResource(file);
 
             if (!cloneOpp)
                 return cloneOpp;
@@ -179,7 +179,7 @@ namespace U.DalilaDB
             {
                 var resource = (TResource)file;
                 //Debug.Log("Casted");
-                var cloneOpp = DalilaFS.CloneResource(resource);
+                var cloneOpp = DalilaFS.CloneDCResource(resource);
                 //Debug.Log("Cloned: " + cloneOpp);
                 if (!cloneOpp)
                     throw cloneOpp.Error;

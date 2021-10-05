@@ -158,7 +158,7 @@ namespace U.DalilaDB
                 }
             }
 
-            var cloneOpp = DalilaFS.CloneResource(file);
+            var cloneOpp = DalilaFS.CloneDCResource(file);
 
             if (!cloneOpp)
                 return;
@@ -190,7 +190,7 @@ namespace U.DalilaDB
             {
                 var resource = (TResource)file;
                 //Debug.Log("Casted");
-                var cloneOpp = DalilaFS.CloneResource(resource);
+                var cloneOpp = DalilaFS.CloneDCResource(resource);
                 //Debug.Log("Cloned: " + cloneOpp);
                 if (!cloneOpp)
                     throw cloneOpp.Error;
@@ -294,7 +294,7 @@ namespace U.DalilaDB
             return _taskQueue.StartNew(() =>
             {
                 
-                var opp = _fileSystem.CreateResource(ResourceLocation(keyStr), new Container<TValue>(value));
+                var opp = _fileSystem.CreateDCResource(ResourceLocation(keyStr), new Container<TValue>(value));
 
                 // Add to the hot dictionary
                 if(opp) CacheAdd(ResourceLocation(keyStr), new Container<TValue>(value));
@@ -334,7 +334,7 @@ namespace U.DalilaDB
 
                 // Read the file
                 if (!opp)
-                    opp = _fileSystem.ReadResource<Container<TValue>>(ResourceLocation(keyStr));
+                    opp = _fileSystem.ReadDCResource<Container<TValue>>(ResourceLocation(keyStr));
 
                 //Debug.Log("Readed from file: " + opp);
 
@@ -377,7 +377,7 @@ namespace U.DalilaDB
             return _taskQueue.StartNew(() =>
             {
 
-                var opp = _fileSystem.ReplaceResource(ResourceLocation(keyStr), new Container<TValue>(value));
+                var opp = _fileSystem.ReplaceDCResource(ResourceLocation(keyStr), new Container<TValue>(value));
 
                 // Add to the hot dictionary
                 if (opp) CacheAdd(ResourceLocation(keyStr), new Container<TValue>(value));

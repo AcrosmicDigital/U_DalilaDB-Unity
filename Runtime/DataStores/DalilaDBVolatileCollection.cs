@@ -136,7 +136,7 @@ namespace U.DalilaDB
 
 
             // Clone the object
-            var cloneOpp = DalilaFS.CloneResource(document);
+            var cloneOpp = DalilaFS.CloneDCResource(document);
 
             if (!cloneOpp)
                 return cloneOpp;
@@ -178,7 +178,7 @@ namespace U.DalilaDB
             }).Select(p => p.Value).FirstOrDefault();
 
             if (hotElement != null)
-                return DalilaFS.CloneResource(hotElement);
+                return DalilaFS.CloneDCResource(hotElement);
 
             return new DataOperation<TCollection>().Fails(null, new FileNotFoundException());
 
@@ -204,7 +204,7 @@ namespace U.DalilaDB
                     return r;
 
                 })
-                .Select(c => DalilaFS.CloneResource(c))
+                .Select(c => DalilaFS.CloneDCResource(c))
                 .Where(o => o)
                 .Select(o => o.Data);
 
@@ -244,7 +244,7 @@ namespace U.DalilaDB
                 .FirstOrDefault();
 
             if (hotElement != null)
-                return DalilaFS.CloneResource(hotElement);
+                return DalilaFS.CloneDCResource(hotElement);
             else
                 return new DataOperation<TCollection>().Fails(null, new FileNotFoundException());
         }

@@ -102,7 +102,7 @@ namespace U.DalilaDB
                 return new DataOperation().Fails(new ArgumentNullException()); ;
 
 
-            var cloneOpp = DalilaFS.CloneResource(document);
+            var cloneOpp = DalilaFS.CloneDCResource(document);
 
             if (!cloneOpp)
                 return cloneOpp;
@@ -123,7 +123,7 @@ namespace U.DalilaDB
         private static DataOperation<TDocument> CacheRead()
         {
             if (cacheStore != null)
-                return DalilaFS.CloneResource(cacheStore);
+                return DalilaFS.CloneDCResource(cacheStore);
             else
                 return new DataOperation<TDocument>().Fails(null, new FileNotFoundException());
         }

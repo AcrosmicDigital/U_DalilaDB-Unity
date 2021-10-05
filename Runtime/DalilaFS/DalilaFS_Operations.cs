@@ -9,7 +9,7 @@ using System.Data;
 
 namespace U.DalilaDB
 {
-    internal partial class DalilaFS
+    public partial class DalilaFS
     {
 
 
@@ -137,7 +137,7 @@ namespace U.DalilaDB
     /// </summary>
     /// <param name="location"></param>
     /// <returns></returns>
-    public DataOperation IsEmpty(string location)
+    public DataOperation IsEmptyLocation(string location)
     {
         var operation = new DataOperation(); // Proccess
         string path; // full path
@@ -289,7 +289,7 @@ namespace U.DalilaDB
         // If ExistsLocation
         if (ExistLocation(location))
         {
-            if (IsEmpty(location))
+            if (IsEmptyLocation(location))
             {
                 return DeleteLocation(location);
             }
@@ -315,7 +315,7 @@ namespace U.DalilaDB
     /// </summary>
     /// <param name="location"></param>
     /// <returns></returns>
-    public DataOperation DeleteEmptiesOfLocation(string location)
+    public DataOperation DeleteEmptyLocations(string location)
     {
 
         var operation = new DataOperation(); // Proccess
@@ -403,7 +403,7 @@ namespace U.DalilaDB
         }
 
         // Delete the empty folders
-        DeleteEmptiesOfLocation(GetPrevLocation(locationFrom));
+        DeleteEmptyLocations(GetPrevLocation(locationFrom));
 
         return operation.Successful("1");
 
