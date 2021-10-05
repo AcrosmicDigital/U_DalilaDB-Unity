@@ -10,4 +10,6 @@
 - Missing some volatile stores tests
 
 - Hash functions to store passwords
+
+- Si se usan dos filesystems desde la misma ubicacion y se usa el cifrado, ambos usaran el mismo key, a menos que se indique lo contrario y se cambie el nombre del archivo de la key random
  

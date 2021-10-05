@@ -176,7 +176,7 @@ namespace U.DalilaDB
 
         //--
 
-        public DataOperation CreateEncryDCResource<TResource>(string resource, TResource file, byte[] Key)
+        public DataOperation CreateEncryDCResource<TResource>(string resource, TResource file)
 
             where TResource : class
 
@@ -197,8 +197,6 @@ namespace U.DalilaDB
             {
                 return operation.Fails(e);
             }
-            if (Key == null || Key.Length <= 0)
-                return operation.Fails(new ArgumentNullException("Key"));
 
 
             // Check if the path exist or create it, if cant create return the error
@@ -215,7 +213,7 @@ namespace U.DalilaDB
                 // with the specified key and IV.
                 using (Aes aesAlg = Aes.Create())
                 {
-                    aesAlg.Key = Key;
+                    aesAlg.Key = _aesKey;
 
                     // Create the streams used for encryption.
                     using (FileStream msEncrypt = new FileStream(path, FileMode.Create))
@@ -291,7 +289,7 @@ namespace U.DalilaDB
 
         }
 
-        public DataOperation<TResource> ReadEncryDCResource<TResource>(string resource, byte[] Key)
+        public DataOperation<TResource> ReadEncryDCResource<TResource>(string resource)
 
             where TResource : class
 
@@ -308,8 +306,6 @@ namespace U.DalilaDB
             {
                 return operation.Fails(null, e);
             }
-            if (Key == null || Key.Length <= 0)
-                return operation.Fails(null, new ArgumentNullException("Key"));
 
 
             try
@@ -318,7 +314,7 @@ namespace U.DalilaDB
                 // with the specified key and IV.
                 using (Aes aesAlg = Aes.Create())
                 {
-                    aesAlg.Key = Key;
+                    aesAlg.Key = _aesKey;
 
                     // Create a decryptor to perform the stream transform.
                     //ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);

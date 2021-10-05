@@ -119,53 +119,26 @@ namespace DalilaFsTests
             };
             var fileName = "/Sample.xml";
 
-            byte[] savedKey = { 0x16, 0x15, 0x16, 0x15, 0x16, 0x15, 0x16, 0x15, 0x16, 0x15, 0x16, 0x15, 0x16, 0x15, 0x16, 0x15 };
+            // Save the class
+            var saveOpp = fs.CreateEncryDCResource(fileName, file);
+            Debug.Log(saveOpp);
+            Assert.IsTrue(saveOpp);
+            //Assert.IsTrue(fs.ExistResource("/Sample.xml"));
 
-            using (Aes myAes = Aes.Create())
-            {
 
-                // Save the class
-                var saveOpp = fs.CreateEncryDCResource(fileName, file, savedKey);
-                Debug.Log(saveOpp);
-                Assert.IsTrue(saveOpp);
-                //Assert.IsTrue(fs.ExistResource("/Sample.xml"));
+            // Read the class saved
+            var readOpp = fs.ReadEncryDCResource<SampleDCSerializableClass>(fileName);
+            Debug.Log(readOpp);
 
-                //// Read the class saved
-                //var readOpp = fs.ReadEncryDCResource<SampleDCSerializableClass>(fileName, myAes.Key, myAes.IV);
-                //Debug.Log(readOpp);
+            //Display the original data and the decrypted data.
+            Debug.Log("Original  : " + file.id + " " + file.name + " " + file.age);
+            Debug.Log("Readed    : " + readOpp.Data.id + " " + readOpp.Data.name + " " + readOpp.Data.age);
 
-                ////Display the original data and the decrypted data.
-                //Debug.Log("Original  : " + file.id + " " + file.name + " " + file.age);
-                //Debug.Log("Readed    : " + readOpp.Data.id + " " + readOpp.Data.name + " " + readOpp.Data.age);
-
-                //// Compare the values of the two classes
-                //Assert.AreEqual(file.id, readOpp.Data.id);
-                //Assert.AreEqual(file.name, readOpp.Data.name);
-                //Assert.AreEqual(file.age, readOpp.Data.age);
-                ////Assert.IsTrue(fs.ExistResource("/Sample.xml"));
-
-            }
-
-            using (Aes myAes = Aes.Create())
-            {
-
-               
-                // Read the class saved
-                var readOpp = fs.ReadEncryDCResource<SampleDCSerializableClass>(fileName, savedKey);
-                Debug.Log(readOpp);
-
-                //Display the original data and the decrypted data.
-                Debug.Log("Original  : " + file.id + " " + file.name + " " + file.age);
-                Debug.Log("Readed    : " + readOpp.Data.id + " " + readOpp.Data.name + " " + readOpp.Data.age);
-
-                // Compare the values of the two classes
-                Assert.AreEqual(file.id, readOpp.Data.id);
-                Assert.AreEqual(file.name, readOpp.Data.name);
-                Assert.AreEqual(file.age, readOpp.Data.age);
-                //Assert.IsTrue(fs.ExistResource("/Sample.xml"));
-
-            }
-
+            // Compare the values of the two classes
+            Assert.AreEqual(file.id, readOpp.Data.id);
+            Assert.AreEqual(file.name, readOpp.Data.name);
+            Assert.AreEqual(file.age, readOpp.Data.age);
+            //Assert.IsTrue(fs.ExistResource("/Sample.xml"));
 
 
 
