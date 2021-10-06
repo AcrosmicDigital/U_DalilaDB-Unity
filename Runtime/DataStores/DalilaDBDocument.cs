@@ -37,7 +37,18 @@ namespace U.DalilaDB
             get
             {
                 if (fileSystem_ == null)
+                {
                     fileSystem_ = new DalilaFS(_instance.rootPath_);
+
+                    // Set the encryption if enabled
+                    if (_instance._aesEncryption)
+                    {
+                        fileSystem_._aesEncryption = _instance._aesEncryption;
+                        fileSystem_._aesFixedKey = _instance._aesFixedKey;
+                        fileSystem_._aesKeySize = _instance._aesKeySize;
+                        fileSystem_._aesRandomKeyResourceName = _instance._aesRandomKeyResourceName;
+                    }
+                }
 
                 return fileSystem_;
             }
@@ -149,6 +160,22 @@ namespace U.DalilaDB
 
 
         #endregion HotCache
+
+        #region Encryption
+
+
+        protected virtual bool _aesEncryption => false; // If encryption will be enabled or disabled
+        protected virtual DalilaFS.aesValidKeySizes _aesKeySize => DalilaFS.aesValidKeySizes.aes128; // Key size
+        private string _aesRandomKeyResourceName => "/DalilaDB/DalilaDocuments/Keys/" + _instance.GetType().Name + "Aes.key"; // Name of the key
+        protected virtual string _aesFixedKey => _instance.GetType().Name + "_KeyIsNoKey"; // Fixed key
+
+        public static void ResetFileSystem()
+        {
+            fileSystem_ = null;
+        }
+
+
+        #endregion AesEncryption
 
 
 

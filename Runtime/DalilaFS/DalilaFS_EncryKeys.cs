@@ -95,10 +95,13 @@ namespace U.DalilaDB
                     try
                     {
                         path = ResourceToSystemPath(_aesRandomKeyResourceName);
+
+                        // Create path if dont exist
+                        CreateLocation(GetResourceLocation(_aesRandomKeyResourceName));
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError("DalilaFS: Error in path of random aesKey file: " + e);
+                        Debug.LogError("DalilaFS: Error in path of random ae sKey file: " + e);
                         aesRandomKey_ = aesDefaultRandomKey;
                     }
 
@@ -110,6 +113,7 @@ namespace U.DalilaDB
                             using (Aes aesAlg = Aes.Create())
                             {
                                 File.WriteAllBytes(path, aesAlg.Key);
+                                Debug.Log("DalilaFS: Saving random key in : " + path);
                             }
                         }
                         catch (Exception e)
@@ -124,6 +128,7 @@ namespace U.DalilaDB
                         try
                         {
                             aesRandomKey_ = File.ReadAllBytes(ResourceToSystemPath(_aesRandomKeyResourceName));
+                            Debug.Log("DalilaFS: Reading random key from : " + path);
                             return aesRandomKey_;
                         }
                         catch (Exception e)

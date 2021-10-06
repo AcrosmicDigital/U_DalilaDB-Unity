@@ -13,3 +13,8 @@
 
 - Si se usan dos filesystems desde la misma ubicacion y se usa el cifrado, ambos usaran el mismo key, a menos que se indique lo contrario y se cambie el nombre del archivo de la key random
  
+- Probar si dos subclases con el mismo nombre que hereden de document o lo que sea no se sobreescriben
+
+- Documentar como se habilita el cifrado y sus caracteristicas, tanto en filesystem como en las collections
+
+- poner el application persisent data path por defecto
