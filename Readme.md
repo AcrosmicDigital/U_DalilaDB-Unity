@@ -1,6 +1,6 @@
 <img src="https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDB-Logob.png" width="100">
 
-# DalilaDB(Beta) for Unity
+# DalilaDB for Unity
 
 A document based NoSql database for use in local applications that can store data in disk or in memory.
 
@@ -1014,12 +1014,3 @@ In this example a password is saved and readed in DalilaDBCollection
 
 ```
 
-
-## 
-
-
-```C#
-
-
-
-```
