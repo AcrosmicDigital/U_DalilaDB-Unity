@@ -71,7 +71,7 @@ public class DalilaDB_Secret
     public void A000_Save_TwoHashedElements()
     {
 
-        // If save a key
+        // Save the password
         var opp = HashedElementsStore.Save("Password", new Secret("PasswordInPlainText"));
         Debug.Log("Saved as Int: " + opp);
         Assert.IsTrue(opp);
@@ -96,7 +96,7 @@ public class DalilaDB_Secret
     public void A100_HashedValueInDocument()
     {
 
-        // You can create multiple instances of the class
+        // Create a instance with a password
         var user1 = new HashedDocument(); user1.password = new Secret("PasswordInPlainText");
 
         // save
@@ -118,7 +118,7 @@ public class DalilaDB_Secret
     public void A100_HashedValueInCollection()
     {
 
-        // You can create multiple instances of the class
+        // You can create multiple instances of the class with diferent passwords
         var user1 = new HashedCollection(); user1.password = new Secret("PasswordInPlainTextOne");
         var user2 = new HashedCollection(); user2.password = new Secret("PasswordInPlainTextTwo");
 
@@ -127,7 +127,7 @@ public class DalilaDB_Secret
         Assert.IsTrue(user1.Save());
         Assert.IsTrue(user2.Save());
 
-        // Now find the document
+        // Now find the data
         var readOpp1 = HashedCollection.FindById(user1._id);
         var readOpp2 = HashedCollection.FindById(user2._id);
         Assert.IsTrue(readOpp1);

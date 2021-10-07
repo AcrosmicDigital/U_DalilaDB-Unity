@@ -313,7 +313,7 @@ public class DalilaCollection_D0Logic
         Assert.IsTrue(opp);
         Assert.IsTrue(opp.Data.count == 66);
 
-        // If you try to find an unexistent document will return null
+        // If you try to find an unexistent document will return default
         var opp2 = User.FindByIdOrDefault("4961429416443432010", defaultDoc);
         Assert.IsTrue(opp2);
         Assert.IsTrue(opp2.Data.count == 11);
@@ -343,7 +343,7 @@ public class DalilaCollection_D0Logic
     public void A210_FindOne_01WillFindAnDocumentOrFindNull()
     {
 
-        // Create one document
+        // Create five documents
         Debug.Log("Save");
         var newd1 = new User { count = 66, name = "Pedro" };
         var newd2 = new User { count = 66, name = "Paco" };
@@ -351,15 +351,14 @@ public class DalilaCollection_D0Logic
         var newd4 = new User { count = 88, name = "Juan" };
         var newd5 = new User { count = 99, name = "Ale" };
 
-
-        // The first one will be saved
+        // Save
         Assert.IsTrue(newd1.Save());
         Assert.IsTrue(newd2.Save());
         Assert.IsTrue(newd3.Save());
         Assert.IsTrue(newd4.Save());
         Assert.IsTrue(newd5.Save());
 
-        // Only one document will be stored
+        // Check
         Assert.IsTrue(User.Count() == 5);
 
         // Find a document
@@ -500,7 +499,7 @@ public class DalilaCollection_D0Logic
     public void A220_FindMany_01WillFindAnArrayOrEmptyArrayAndFalseOperation()
     {
 
-        // Create one document
+        // Create six documents
         Debug.Log("Save");
         var newd1 = new User { count = 66, name = "Pedro" };
         var newd2 = new User { count = 66, name = "Paco" };
@@ -510,7 +509,7 @@ public class DalilaCollection_D0Logic
         var newd6 = new User { count = 99, name = "Ale" };
 
 
-        // The first one will be saved
+        // Save
         Assert.IsTrue(newd1.Save());
         Assert.IsTrue(newd2.Save());
         Assert.IsTrue(newd3.Save());
@@ -518,10 +517,10 @@ public class DalilaCollection_D0Logic
         Assert.IsTrue(newd5.Save());
         Assert.IsTrue(newd6.Save());
 
-        // Only one document will be stored
+        // Check
         Assert.IsTrue(User.Count() == 6);
 
-        // Find a document
+        // Find documents
         var opp = User.FindMany(d => d.count == 66);
         Assert.IsTrue(opp);
         Assert.IsTrue(opp.Data.Length == 2);
@@ -529,7 +528,7 @@ public class DalilaCollection_D0Logic
         {
             Assert.IsTrue(d.count == 66);
         }
-        // Find a document
+        // Find documents
         opp = User.FindMany(d => d.name == "Juan");
         Assert.IsTrue(opp);
         Assert.IsTrue(opp.Data.Length == 2);
@@ -537,7 +536,7 @@ public class DalilaCollection_D0Logic
         {
             Assert.IsTrue(d.name == "Juan");
         }
-        // Find a document
+        // Find documents
         opp = User.FindMany(d => d.name == "Benito");
         Assert.IsTrue(opp);
         Assert.IsTrue(opp.Data.Length == 1);
@@ -634,7 +633,7 @@ public class DalilaCollection_D0Logic
     public void A230_FindAll_WillFindAllDocuments()
     {
 
-        // Create one document
+        // Create six documents
         Debug.Log("Save");
         var newd1 = new User { count = 66, name = "Pedro" };
         var newd2 = new User { count = 66, name = "Paco" };
@@ -644,13 +643,13 @@ public class DalilaCollection_D0Logic
         var newd6 = new User { count = 99, name = "Ale" };
 
 
-        // Find all document when no documents are stores
+        // Find all document when no documents are stored will return empyty array
         var opp = User.FindAll();
         Assert.IsFalse(opp);
         Assert.IsTrue(opp.Data.Length == 0);
 
 
-        // The first one will be saved
+        // Save
         Assert.IsTrue(newd1.Save());
         Assert.IsTrue(newd2.Save());
         Assert.IsTrue(newd3.Save());
@@ -658,10 +657,10 @@ public class DalilaCollection_D0Logic
         Assert.IsTrue(newd5.Save());
         Assert.IsTrue(newd6.Save());
 
-        // Only one document will be stored
+        // Check
         Assert.IsTrue(User.Count() == 6);
 
-        // Find all document
+        // Find all documents
         opp = User.FindAll();
         Assert.IsTrue(opp);
         Assert.IsTrue(opp.Data.Length == 6);

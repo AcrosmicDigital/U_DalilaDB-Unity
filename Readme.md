@@ -13,6 +13,8 @@ A document based NoSql database for use in local applications that can store dat
 - You can save data to hard disk or to RAM memory
 - Serialize public and private properties
 - Three kinds of storage models
+- Optional AES128 or AES256 encryption
+- Optional SHA256 to hash passwords or text
 
 ## Instalation
 
@@ -39,7 +41,7 @@ A document based NoSql database for use in local applications that can store dat
 
 14. If something went wrong, please create a new issue with logs and Unity version
 
-## Basic Usage
+## Store persistent data
 
 ### Elements
 
@@ -148,7 +150,7 @@ MainDdbElements.Delete("Lives");
 
 ```
 
-### Example
+#### Example
 
 1. This is an componet that store data, when the object is created the lives value and the position will be searched OnAwake()
 2. OnDisable the values will be saved
@@ -337,7 +339,7 @@ GameDdbDocument.Delete();
 
 ```
 
-### Example
+#### Example
 
 1. This is a sample use of the document to save the Time that the game is Played
 
@@ -441,16 +443,248 @@ public class UserDdbCollection : DalilaDBCollection<UserDdbCollection>
 
 #### Save
 
+- You can create a new object creating a new instance of the class
+- You can set or not the _id, if is not set a new one will be generated
+- _id is a string with 19 numbers, only numbers are allowed
+- To save a instance use Save() method
+- If instance is modified you need to use Save() each time
+- If you save two documents with the same key, the second will overwrite the first use SaveNew() to crate a copy with diferent _id
+
 ```C#
 
+// Save a element with id
+var newd1 = new User { _id = "4961429416443432069", count = 66, name = "Pedro" };
+newd1.Save();
+
+// Save a element without id, a random id will be generated
+var newd2 = new User { count = 77, name = "Paco" };
+newd2.Save();
+
+// Save an IEnumerable of elements
+var userList = new User[]
+{
+    new User { count = 66, name = "Pedro" },
+    new User { count = 66, name = "Pedro" },
+    new User { count = 66, name = "Pedro" },
+    new User { count = 66, name = "Pedro" },
+    new User { count = 66, name = "Pedro" },
+    new User { count = 66, name = "Pedro" },
+};
+var opp = userList.Save();
+
+// If SaveNew is used a new key is generated each time for he document, four documents will be created
+newd1.SaveNew();
+newd1.SaveNew();
+newd1.SaveNew();
+newd1.SaveNew();
+
+```
+
+#### FindById
+
+You can find a document by id
+
+```C#
+
+// Create one document
+var newd1 = new User { _id = "4961429416443432069", count = 66, name = "Pedro" };
+
+// Save
+Assert.IsTrue(newd1.Save());
+
+// Only one document will be stored
+Assert.IsTrue(User.Count() == 1);
+
+// Find the document by id
+var opp = User.FindById("4961429416443432069");
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.count == 66);
+
+// If you try to find an unexistent document will return null
+var opp2 = User.FindById("4961429416443432010");
+Assert.IsFalse(opp2);
+Assert.IsTrue(opp2.Data == null);
+
+```
+
+#### FindByIdOrDefault
+
+```C#
+
+var defaultDoc = new User { count = 11, };
+
+// Create one document
+Debug.Log("Save");
+var newd1 = new User { _id = "4961429416443432069", count = 66, name = "Pedro" };
+
+// The first one will be saved
+Assert.IsTrue(newd1.Save());
+
+// Only one document will be stored
+Assert.IsTrue(User.Count() == 1);
+Assert.IsTrue(User.Exist("4961429416443432069"));
+
+// Find the document by the id
+var opp = User.FindByIdOrDefault("4961429416443432069", defaultDoc);
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.count == 66);
+
+// If you try to find an unexistent document will return default
+var opp2 = User.FindByIdOrDefault("4961429416443432010", defaultDoc);
+Assert.IsTrue(opp2);
+Assert.IsTrue(opp2.Data.count == 11);
+
+```
+
+#### FindOne
+
+You can find a document with specified value, similar to LINQ
+
+```C#
+
+// Create five documents
+Debug.Log("Save");
+var newd1 = new User { count = 66, name = "Pedro" };
+var newd2 = new User { count = 66, name = "Paco" };
+var newd3 = new User { count = 77, name = "Benito" };
+var newd4 = new User { count = 88, name = "Juan" };
+var newd5 = new User { count = 99, name = "Ale" };
+
+// Save
+Assert.IsTrue(newd1.Save());
+Assert.IsTrue(newd2.Save());
+Assert.IsTrue(newd3.Save());
+Assert.IsTrue(newd4.Save());
+Assert.IsTrue(newd5.Save());
+
+// Check
+Assert.IsTrue(User.Count() == 5);
+
+// Find a document
+var opp = User.FindOne(d => d.count == 66);
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.count == 66);
+// Find a document
+opp = User.FindOne(d => d.count == 77);
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.count == 77);
+// Find a document
+opp = User.FindOne(d => d.name == "Ale");
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.name == "Ale");
+// Find a document
+opp = User.FindOne(d => d.name == "Juan");
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.count == 88);
+
+// If you try to find an unexistent document will return null
+opp = User.FindOne(d => d.name == "Ema");
+Assert.IsFalse(opp);
+Assert.IsTrue(opp.Data == null);
+// If you try to find an unexistent document will return null
+opp = User.FindOne(d => d.count == 100);
+Assert.IsFalse(opp);
+Assert.IsTrue(opp.Data == null);
+
+```
+
+#### FindMany
+
+```C#
+
+// Create six documents
+Debug.Log("Save");
+var newd1 = new User { count = 66, name = "Pedro" };
+var newd2 = new User { count = 66, name = "Paco" };
+var newd3 = new User { count = 77, name = "Benito" };
+var newd4 = new User { count = 88, name = "Juan" };
+var newd5 = new User { count = 33, name = "Juan" };
+var newd6 = new User { count = 99, name = "Ale" };
+
+
+// Save
+Assert.IsTrue(newd1.Save());
+Assert.IsTrue(newd2.Save());
+Assert.IsTrue(newd3.Save());
+Assert.IsTrue(newd4.Save());
+Assert.IsTrue(newd5.Save());
+Assert.IsTrue(newd6.Save());
+
+// Check
+Assert.IsTrue(User.Count() == 6);
+
+// Find documents
+var opp = User.FindMany(d => d.count == 66);
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.Length == 2);
+foreach(var d in opp.Data)
+{
+    Assert.IsTrue(d.count == 66);
+}
+// Find documents
+opp = User.FindMany(d => d.name == "Juan");
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.Length == 2);
+foreach (var d in opp.Data)
+{
+    Assert.IsTrue(d.name == "Juan");
+}
+// Find documents
+opp = User.FindMany(d => d.name == "Benito");
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.Length == 1);
+foreach (var d in opp.Data)
+{
+    Assert.IsTrue(d.name == "Benito");
+}
+// If you try to find an unexistent document will return empty array and false
+opp = User.FindMany(d => d.name == "Ema");
+Assert.IsFalse(opp);
+Assert.IsTrue(opp.Data.Length == 0);
+
+// If you try to find an unexistent document will return empty array and false
+opp = User.FindMany(d => d.count == 11);
+Assert.IsFalse(opp);
+Assert.IsTrue(opp.Data.Length == 0);
 
 
 ```
 
-#### Find/Read
+#### FindAll
 
 ```C#
 
+// Create six documents
+Debug.Log("Save");
+var newd1 = new User { count = 66, name = "Pedro" };
+var newd2 = new User { count = 66, name = "Paco" };
+var newd3 = new User { count = 77, name = "Benito" };
+var newd4 = new User { count = 88, name = "Juan" };
+var newd5 = new User { count = 33, name = "Juan" };
+var newd6 = new User { count = 99, name = "Ale" };
+
+
+// Find all document when no documents are stored will return empyty array
+var opp = User.FindAll();
+Assert.IsFalse(opp);
+Assert.IsTrue(opp.Data.Length == 0);
+
+
+// Save
+Assert.IsTrue(newd1.Save());
+Assert.IsTrue(newd2.Save());
+Assert.IsTrue(newd3.Save());
+Assert.IsTrue(newd4.Save());
+Assert.IsTrue(newd5.Save());
+Assert.IsTrue(newd6.Save());
+
+// Check
+Assert.IsTrue(User.Count() == 6);
+
+// Find all documents
+opp = User.FindAll();
+Assert.IsTrue(opp);
+Assert.IsTrue(opp.Data.Length == 6);
 
 
 ```
@@ -459,7 +693,10 @@ public class UserDdbCollection : DalilaDBCollection<UserDdbCollection>
 
 ```C#
 
-
+public static DataOperation UpdateById(Func<TCollection, TCollection> updating, SID id);
+public static DataOperation UpdateAll(Func<TCollection, TCollection> updating);
+public static DataOperation UpdateOne(Func<TCollection, TCollection> updating, Func<TCollection, bool> predicate);
+public static DataOperation UpdateMany(Func<TCollection, TCollection> updating, Func<TCollection, bool> predicate);
 
 ```
 
@@ -467,13 +704,16 @@ public class UserDdbCollection : DalilaDBCollection<UserDdbCollection>
 
 ```C#
 
-
+public static DataOperation DeleteById(SID id);
+public static DataOperation DeleteAll();
+public static DataOperation DeleteOne(Func<TCollection, bool> predicate);
+public static DataOperation DeleteMany(Func<TCollection, bool> predicate);
 
 ```
 
-### Volatile Stores
+## Store Volatile Data
 
-Volatile storage save data to RAM memory, the behaviour is the same as normal stores, tha main diference is that all data will lose if application is closed.
+Volatile storage save data to RAM memory, the behaviour is the same as perstent stores, tha main diference is that all data will lose if application is closed.
 
 #### Volatile Elements
 
@@ -492,7 +732,7 @@ public class MainDdbVolatileElements : DalilaDBVolatileElements<MainDdbVolatileE
 
 ```
 
-#### Volatile Document class
+#### Volatile Document
 
 1. Inherits from "DalilaDBVolatileDocument" intead of "DalilaDBDocument"
 2. "rootPath_" is not needed because data wont be store in hard disk
@@ -519,7 +759,7 @@ public class GameDdbVolatileDocument : DalilaDBVolatileDocument<GameDdbVolatileD
 
 ```
 
-#### Volatile Collection class
+#### Volatile Collection
 
 1. Inherits from "UserDdbVolatileCollection" intead of "UserDdbCollection"
 2. "rootPath_" is not needed because data wont be store in hard disk
@@ -552,6 +792,230 @@ public class UserDdbVolatileCollection : DalilaDBVolatileCollection<UserDdbVolat
 }
 
 ```
+
+
+```C#
+
+
+
+```
+
+## Encryption
+
+DalilaDB implements AES128 or AES256 encryption for persistent data stores, and SHA256 to hash passwords or text, both are disabled by default 
+
+### Encrypt data stores
+
+All DalilaDB data stores can be encrypted, to enable encryption override _aesEncryption method, you can change some parameters of encryption like the key size and the key used to encrypt data.
+
+You can harcode the key n you proyect or use an external service to store it, try not to store in a document
+
+```C#
+
+    // Enable encryption
+    protected override bool _aesEncryption => true;
+
+    // Optional parameters
+    protected override DalilaFS.aesValidKeySizes _aesKeySize => DalilaFS.aesValidKeySizes.aes256;
+    protected override string _aesFixedKey => "ThisIsTheKey";
+
+```
+
+An unencrypted document can be easily readed and modified
+
+![DalilaDBInstallation1](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBEncryption1.JPG)
+
+An encrypted document cant be readed or modified without the key
+
+![DalilaDBInstallation1](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBEncryption2.JPG)
+
+The following example shows how to use encryption in Elements, Documets and Collections
+
+```C#
+
+    class SimpleEncryptedElements : DalilaDBElements<SimpleEncryptedElements>
+    {
+
+        // Enable encryption
+        protected override bool _aesEncryption => true;
+
+        // Optional parameters
+        protected override DalilaFS.aesValidKeySizes _aesKeySize => DalilaFS.aesValidKeySizes.aes256;
+        protected override string _aesFixedKey => "ThisIsTheKey";
+
+    }
+
+
+    [KnownType(typeof(UserEncryptedDocument))]
+    [DataContract()]
+    class UserEncryptedDocument : DalilaDBDocument<UserEncryptedDocument>
+    {
+
+        [DataMember()]
+        public int count;
+
+        // Enable encryption
+        protected override bool _aesEncryption => true;
+
+        // Optional parameters
+        protected override DalilaFS.aesValidKeySizes _aesKeySize => DalilaFS.aesValidKeySizes.aes256;
+        protected override string _aesFixedKey => "ThisIsTheKey";
+
+    }
+
+
+    [KnownType(typeof(UserEncrypted))]
+    [DataContract()]
+    class UserEncrypted : DalilaDBCollection<UserEncrypted>
+    {
+
+        [DataMember()]
+        public int count;
+
+        [DataMember()]
+        public string name;
+
+        // Enable encryption
+        protected override bool _aesEncryption => true;
+
+        // Optional parameters
+        protected override DalilaFS.aesValidKeySizes _aesKeySize => DalilaFS.aesValidKeySizes.aes256;
+        protected override string _aesFixedKey => "ThisIsTheKey";
+
+    }
+
+
+```
+
+### Hash Passwords
+
+Is a bad idea store passwords in plain text, because can be easily readed
+
+![DalilaDBInstallation3](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBEncryption3.JPG)
+
+You can use a object of type secret to store this data so it cant be readed
+
+![DalilaDBInstallation3](https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDBEncryption4.JPG)
+
+The secret object hash a string ans store the hashed value
+
+```C#
+
+    // Hash a string
+    password = new Secret("PasswordInPlainText")
+
+    // Compare Secrets
+    Assert.IsTrue(password.Compare("PasswordInPlainText"));
+    Assert.IsFalse(password.Compare("ThisIs not the pasword"));
+
+```
+
+In this example a password is saved and readed in DalilaDBElements
+
+```C#
+    
+    using U.DalilaDB;
+
+    class HashedElementsStore : DalilaDBElements<HashedElementsStore> { }
+
+    // Save the password
+    var opp = HashedElementsStore.Save("Password", new Secret("PasswordInPlainText"));
+    Debug.Log("Saved as Int: " + opp);
+    Assert.IsTrue(opp);
+
+    // Now exist
+    Debug.Log("Now Exist: " + HashedElementsStore.Exist("Password"));
+    Assert.IsTrue(HashedElementsStore.Exist("Password"));
+    Assert.IsTrue(HashedElementsStore.Count() == 1);
+
+    // Read the hash
+    var readOpp = HashedElementsStore.Find<Secret>("Password");
+    Assert.IsTrue(readOpp);
+
+    // Compare Secrets
+    Assert.IsTrue(readOpp.Data.Compare("PasswordInPlainText"));
+    Assert.IsFalse(readOpp.Data.Compare("ThisIs not the pasword"));
+
+```
+
+In this example a password is saved and readed in DalilaDBDocument
+
+```C#
+
+    using U.DalilaDB;
+
+    [KnownType(typeof(HashedDocument))]
+    [DataContract()]
+    class HashedDocument : DalilaDBDocument<HashedDocument>
+    {
+
+        [DataMember()]
+        public Secret password;
+
+    }
+
+    // Create a instance with a password
+    var user1 = new HashedDocument(); user1.password = new Secret("PasswordInPlainText");
+
+    // save
+    Debug.Log("Saving");
+    Assert.IsTrue(user1.Save());
+
+    // Now find the document
+    var readOpp = HashedDocument.Find();
+    Assert.IsTrue(readOpp);
+
+    // Compare Secrets
+    Assert.IsTrue(readOpp.Data.password.Compare("PasswordInPlainText"));
+    Assert.IsFalse(readOpp.Data.password.Compare("ThisIs not the pasword"));
+
+```
+
+In this example a password is saved and readed in DalilaDBCollection
+
+```C#
+
+    using U.DalilaDB;
+
+    [KnownType(typeof(HashedCollection))]
+    [DataContract()]
+    class HashedCollection : DalilaDBCollection<HashedCollection>
+    {
+
+        [DataMember()]
+        public Secret password;
+
+    }
+
+    // You can create multiple instances of the class with diferent passwords
+    var user1 = new HashedCollection(); user1.password = new Secret("PasswordInPlainTextOne");
+    var user2 = new HashedCollection(); user2.password = new Secret("PasswordInPlainTextTwo");
+
+    // save
+    Debug.Log("Saving");
+    Assert.IsTrue(user1.Save());
+    Assert.IsTrue(user2.Save());
+
+    // Now find the data
+    var readOpp1 = HashedCollection.FindById(user1._id);
+    var readOpp2 = HashedCollection.FindById(user2._id);
+    Assert.IsTrue(readOpp1);
+    Assert.IsTrue(readOpp2);
+
+    // Compare Secrets of User One
+    Assert.IsTrue(readOpp1.Data.password.Compare("PasswordInPlainTextOne"));
+    Assert.IsFalse(readOpp1.Data.password.Compare("PasswordInPlainTextTwo"));
+    Assert.IsFalse(readOpp1.Data.password.Compare("ThisIs not the pasword"));
+
+    // Compare Secrets of User Two
+    Assert.IsFalse(readOpp2.Data.password.Compare("PasswordInPlainTextOne"));
+    Assert.IsTrue(readOpp2.Data.password.Compare("PasswordInPlainTextTwo"));
+    Assert.IsFalse(readOpp2.Data.password.Compare("ThisIs not the pasword"));
+
+```
+
+
+## 
 
 
 ```C#
