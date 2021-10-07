@@ -60,6 +60,10 @@ namespace U.DalilaDB
             Directory.Delete(rDir, true);
         }
 
+        // Using applicatio persistent data path by default
+        public DalilaFS() : this(Application.persistentDataPath) { }
+
+
         /// <summary>
         /// Sets of characters for the names of locations ans resources
         /// </summary>

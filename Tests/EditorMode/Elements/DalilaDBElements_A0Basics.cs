@@ -91,26 +91,26 @@ public class DalilaElements_A0Basics
         // Check the new Location
         Debug.Log("Default Location: " + ElementsInDefaultPath.Location);
         Debug.Log("Change Location: " + ElementsChangePath.Location);
-        Assert.IsTrue(ElementsInDefaultPath.Location == "/DalilaDB/DalilaElements/ElementsInDefaultPath/");
-        Assert.IsTrue(ElementsChangePath.Location == "/DalilaDB/DalilaElements/ElementsChangePath/");
+        Assert.IsTrue(ElementsInDefaultPath.Location == "/DalilaDB/DalilaElements/DalilaElements_A0Basics.ElementsInDefaultPath/");
+        Assert.IsTrue(ElementsChangePath.Location == "/DalilaDB/DalilaElements/DalilaElements_A0Basics.ElementsChangePath/");
 
         // Check the new ResourceLocation
         Debug.Log("Default ResourceLocation: " + ElementsInDefaultPath.ResourceLocation("KeyValue"));
         Debug.Log("Change ResourceLocation: " + ElementsChangePath.ResourceLocation("KeyValue"));
-        Assert.IsTrue(ElementsInDefaultPath.ResourceLocation("KeyValue") == "/DalilaDB/DalilaElements/ElementsInDefaultPath/KeyValue.xml");
-        Assert.IsTrue(ElementsChangePath.ResourceLocation("KeyValue") == "/DalilaDB/DalilaElements/ElementsChangePath/KeyValue.xml");
+        Assert.IsTrue(ElementsInDefaultPath.ResourceLocation("KeyValue") == "/DalilaDB/DalilaElements/DalilaElements_A0Basics.ElementsInDefaultPath/KeyValue.xml");
+        Assert.IsTrue(ElementsChangePath.ResourceLocation("KeyValue") == "/DalilaDB/DalilaElements/DalilaElements_A0Basics.ElementsChangePath/KeyValue.xml");
 
         // Check the new LocationPath
         Debug.Log("Default LocationPath: " + ElementsInDefaultPath.LocationPath);
         Debug.Log("Change LocationPath: " + ElementsChangePath.LocationPath);
-        Assert.IsTrue(ElementsInDefaultPath.LocationPath == Application.persistentDataPath + "/DalilaDB/DalilaElements/ElementsInDefaultPath/");
-        Assert.IsTrue(ElementsChangePath.LocationPath == Application.persistentDataPath + "/OtherPath/DalilaDB/DalilaElements/ElementsChangePath/");
+        Assert.IsTrue(ElementsInDefaultPath.LocationPath == Application.persistentDataPath + "/DalilaDB/DalilaElements/DalilaElements_A0Basics.ElementsInDefaultPath/");
+        Assert.IsTrue(ElementsChangePath.LocationPath == Application.persistentDataPath + "/OtherPath/DalilaDB/DalilaElements/DalilaElements_A0Basics.ElementsChangePath/");
 
         // Check the new ResourcePath
         Debug.Log("Default ResourcePath: " + ElementsInDefaultPath.ResourceLocation("KeyValue"));
         Debug.Log("Change ResourcePath: " + ElementsChangePath.ResourceLocation("KeyValue"));
-        Assert.IsTrue(ElementsInDefaultPath.ResourcePath("KeyValue") == Application.persistentDataPath + "/DalilaDB/DalilaElements/ElementsInDefaultPath/KeyValue.xml");
-        Assert.IsTrue(ElementsChangePath.ResourcePath("KeyValue") == Application.persistentDataPath + "/OtherPath/DalilaDB/DalilaElements/ElementsChangePath/KeyValue.xml");
+        Assert.IsTrue(ElementsInDefaultPath.ResourcePath("KeyValue") == Application.persistentDataPath + "/DalilaDB/DalilaElements/DalilaElements_A0Basics.ElementsInDefaultPath/KeyValue.xml");
+        Assert.IsTrue(ElementsChangePath.ResourcePath("KeyValue") == Application.persistentDataPath + "/OtherPath/DalilaDB/DalilaElements/DalilaElements_A0Basics.ElementsChangePath/KeyValue.xml");
 
     }
 

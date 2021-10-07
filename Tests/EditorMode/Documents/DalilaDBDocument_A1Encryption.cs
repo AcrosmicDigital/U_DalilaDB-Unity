@@ -40,7 +40,6 @@ public class DalilaDocument_A1Encryption
         // Delete the directory to clear it
         try { Directory.Delete(UserEncryptedDocument.LocationPath, true); } catch (Exception) { }
         UserEncryptedDocument.Delete();
-        UserEncryptedDocument.ResetFileSystem();
 
     }
 

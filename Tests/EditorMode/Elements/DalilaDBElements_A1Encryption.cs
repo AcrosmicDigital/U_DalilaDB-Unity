@@ -33,7 +33,6 @@ public class DalilaElements_A1Encryption
         // Delete the directory to clear it
         try { Directory.Delete(SimpleEncryptedElements.LocationPath, true); } catch (Exception) { }
         SimpleEncryptedElements.DeleteAll();
-        SimpleEncryptedElements.ResetFileSystem();
 
     }
 

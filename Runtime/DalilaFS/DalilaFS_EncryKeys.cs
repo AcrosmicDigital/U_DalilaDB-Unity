@@ -16,6 +16,8 @@ namespace U.DalilaDB
         protected static string aesDefaultFixedKey = "KeyIsNoKey";
         protected static aesValidKeySizes aesDefaultKeySize = aesValidKeySizes.aes128;
         protected static byte[] aesDefaultRandomKey = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+        protected static byte[] aes128DefaultFullKey = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+        protected static byte[] aes256DefaultFullKey = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 
         public enum aesValidKeySizes
         {
@@ -24,7 +26,22 @@ namespace U.DalilaDB
         }
 
         public bool _aesEncryption { get; set; } = false;
-        public aesValidKeySizes _aesKeySize { get; set; } = aesDefaultKeySize;
+
+
+        public aesValidKeySizes aesKeySize_ = aesDefaultKeySize;
+        public aesValidKeySizes _aesKeySize { 
+            get 
+            {
+                return aesKeySize_;
+            } 
+            set 
+            {
+                // If aesKeySize, full key must be null
+                aesKey_ = null;
+
+                aesKeySize_ = value;
+            } 
+        }
 
 
         protected string aesRandomKeyResourceName_ = null;
@@ -41,6 +58,11 @@ namespace U.DalilaDB
             {
                 if (IsValidResource(value))
                 {
+
+                    // If path change, full key must be null and random jey too
+                    aesRandomKey_ = null;
+                    aesKey_ = null;
+
                     aesRandomKeyResourceName_ = value;
                 }
                 else
@@ -55,13 +77,8 @@ namespace U.DalilaDB
             get
             {
                 if (aesFixedKey_ == null)
-                {
-                    // If fixed key is null, full key must be null too
-                    aesKey_ = null;
                     aesFixedKey_ = aesDefaultFixedKey;
-                }
 
-                //Debug.Log("Readfixed: " + aesFixedKey_);
 
                 return aesFixedKey_;
             }
@@ -75,6 +92,8 @@ namespace U.DalilaDB
 
                     aesFixedKey_ = value;
                 }
+                else
+                    Debug.LogError("DalilaFS: Invalid Fixed key");
             }
         }
 
@@ -95,54 +114,52 @@ namespace U.DalilaDB
                     try
                     {
                         path = ResourceToSystemPath(_aesRandomKeyResourceName);
-
-                        // Create path if dont exist
-                        CreateLocation(GetResourceLocation(_aesRandomKeyResourceName));
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError("DalilaFS: Error in path of random ae sKey file: " + e);
-                        aesRandomKey_ = aesDefaultRandomKey;
+                        Debug.LogError("DalilaFS: Error in path of random aesKey file, using default key: " + e);
+                        return aesDefaultRandomKey;
                     }
 
-                    // Check if a key is stored
+                    // Check if a key is stored or store a new one
                     if (!ExistResource(_aesRandomKeyResourceName))
                     {
                         try
                         {
                             using (Aes aesAlg = Aes.Create())
                             {
+                                // Create path if dont exist
+                                CreateLocation(GetResourceLocation(_aesRandomKeyResourceName));
+
+                                // Write the file
                                 File.WriteAllBytes(path, aesAlg.Key);
                                 Debug.Log("DalilaFS: Saving random key in : " + path);
                             }
                         }
                         catch (Exception e)
                         {
-                            Debug.LogError("DalilaFS: Error while creating random aesKey: " + e);
+                            Debug.LogError("DalilaFS: Error while creating random aesKey, using default key: " + e);
+                            return aesDefaultRandomKey;
                         }
                     }
 
                     // Try to read the key
-                    if (ExistResource(_aesRandomKeyResourceName))
+                    try
                     {
-                        try
-                        {
-                            aesRandomKey_ = File.ReadAllBytes(ResourceToSystemPath(_aesRandomKeyResourceName));
-                            Debug.Log("DalilaFS: Reading random key from : " + path);
-                            return aesRandomKey_;
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError("DalilaFS: Error while reading random aesKey: " + e);
-                        }
+                        var readedKey = File.ReadAllBytes(ResourceToSystemPath(_aesRandomKeyResourceName));
+                        //Debug.Log("DalilaFS: Reading random key from : " + path);
+                        aesRandomKey_ = readedKey;
+                        return aesRandomKey_;
                     }
-
-                    // If the file cant be created or readed
-                    Debug.LogError("DalilaFS: Error creating or reading random aesKey, using default key");
-                    aesRandomKey_ = aesDefaultRandomKey;
+                    catch (Exception e)
+                    {
+                        Debug.LogError("DalilaFS: Error while reading random aesKey: " + e);
+                        return aesDefaultRandomKey;
+                    }
 
                 }
 
+                // If is not null just return
                 return aesRandomKey_;
 
             }
@@ -178,14 +195,20 @@ namespace U.DalilaDB
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError("DalilaFS: Error while computing aesKey: " + e);
-                        aesKey_ = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+                        Debug.LogError("DalilaFS: Error while computing aesFullKey, using default key: " + e);
+
+                        if (_aesKeySize == aesValidKeySizes.aes128)
+                            return aes128DefaultFullKey;
+                        if (_aesKeySize == aesValidKeySizes.aes256)
+                            return aes256DefaultFullKey;
                     }
                 }
 
+                // If is already set, dont create a new one
                 return aesKey_;
 
             } 
         }
+
     }
 }

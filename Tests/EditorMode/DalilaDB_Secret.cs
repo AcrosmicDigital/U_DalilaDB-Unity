@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 
-public class DalilaDBHashPassword
+public class DalilaDB_Secret
 {
 
     #region Example classes

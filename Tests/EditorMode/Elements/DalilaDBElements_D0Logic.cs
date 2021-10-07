@@ -19,6 +19,25 @@ public class DalilaElements_D0Logic
 
     }
 
+
+
+    // Subclases same name
+    class ParentOne
+    {
+        public class SElements : DalilaDBElements<SElements>
+        {
+
+        }
+    }
+
+    class ParentTwo
+    {
+        public class SElements : DalilaDBElements<SElements>
+        {
+
+        }
+    }
+
     #endregion Example classes
 
 
@@ -26,12 +45,46 @@ public class DalilaElements_D0Logic
     public void SetUp()
     {
         // Delete the directory to clear it
+        try { Directory.Delete(ParentOne.SElements.LocationPath, true); } catch (Exception) { }
+        try { Directory.Delete(ParentTwo.SElements.LocationPath, true); } catch (Exception) { }
         try { Directory.Delete(SimpleElements.LocationPath, true); } catch (Exception) { }
+        ParentOne.SElements.DeleteAll();
+        ParentTwo.SElements.DeleteAll();
         SimpleElements.DeleteAll();
 
     }
 
 
+    [Test]
+    public void H000_Save_TwoClassesWithSameNameSimplePasses()
+    {
+        var cc1 = new ParentOne.SElements();
+        Debug.Log("Name: " + cc1.GetType().Name);
+        Debug.Log("Name: " + cc1.GetType().FullName.Replace('+', '.'));
+        Debug.Log("Name: " + cc1.GetType().AssemblyQualifiedName);
+
+        var opp = ParentOne.SElements.Save("Filee", "Text1");
+        Debug.Log("Saved as Int: " + opp);
+        Assert.IsTrue(opp);
+
+        var opp2 = ParentTwo.SElements.Save("Filee", "Text2");
+        Debug.Log("Saved as Int: " + opp2);
+        Assert.IsTrue(opp2);
+
+        // And can de readed
+        var readOpp = ParentOne.SElements.Find<string>("Filee");
+        Debug.Log("Readed as string: Opp: " + readOpp + " V: " + readOpp.Data);
+        Assert.IsTrue(readOpp);
+        Assert.IsTrue(readOpp.Data == "Text1");
+
+        // And can de readed
+        var readOpp2 = ParentTwo.SElements.Find<string>("Filee");
+        Debug.Log("Readed as Int: string: " + readOpp2 + " V: " + readOpp2.Data);
+        Assert.IsTrue(readOpp2);
+        Assert.IsTrue(readOpp2.Data == "Text2");
+
+
+    }
 
 
     [Test]

@@ -87,10 +87,10 @@ namespace U.DalilaDB
         }
 
 
-        protected abstract string rootPath_ { get; }  // This can be overritd to change the path
+        protected virtual string rootPath_ => Application.persistentDataPath;  // This can be overritd to change the path
 
         public static string RootPath => _fileSystem._root;  // Directory where DalilaDB is stored
-        public static string Location => "/DalilaDB/DalilaCollections/" + _instance.GetType().Name + "/";
+        public static string Location => "/DalilaDB/DalilaCollections/" + _instance.GetType().FullName.Replace('+', '.') + "/";
         public static string LocationPath => RootPath.TrimEnd('/') + Location;  // Get the path where the resources are stores
         public static string ResourceLocation(SID _id) => Location + _id + ".xml";  // Get the name of a resource referenced from the Root directory
         public static string ResourceLocation(TCollection document) => Location + document._id + ".xml";  // Get the name of a resource referenced from the Root directory
@@ -252,11 +252,6 @@ namespace U.DalilaDB
         protected virtual DalilaFS.aesValidKeySizes _aesKeySize => DalilaFS.aesValidKeySizes.aes128; // Key size
         private string _aesRandomKeyResourceName => "/DalilaDB/DalilaCollections/Keys/" + _instance.GetType().Name + "Aes.key"; // Name of the key
         protected virtual string _aesFixedKey => _instance.GetType().Name + "_KeyIsNoKey"; // Fixed key
-
-        public static void ResetFileSystem()
-        {
-            fileSystem_ = null;
-        }
 
 
         #endregion AesEncryption

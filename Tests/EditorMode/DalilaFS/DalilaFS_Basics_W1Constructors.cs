@@ -29,6 +29,19 @@ namespace DalilaFsTests
 
 
         [Test]
+        public void A_Constructor_WhenNoPathPassed_WillUseApplicationPersistentDatapath()
+        {
+            // Pass a slash or not is the same
+            var fileSystem1 = new DalilaFS();
+
+            Debug.Log(fileSystem1._root);
+
+            Assert.AreEqual(Application.persistentDataPath + "/", fileSystem1._root);
+
+        }
+
+
+        [Test]
         public void B_Constructor_WhenOtherValidPathPassedThatExist_MustInit()
         {
             var path = Application.persistentDataPath + "/23e32d23d2332d";

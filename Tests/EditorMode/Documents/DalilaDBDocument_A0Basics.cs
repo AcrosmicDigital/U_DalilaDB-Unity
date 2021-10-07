@@ -106,34 +106,36 @@ public class DalilaDocument_A0Basics
     {
 
         // Check RootPath
-        Debug.Log("Default RootPath: " + DocumentInDefaultPath.RootPath);
-        Debug.Log("Change  RootPath: " + DocumentInChangePath.RootPath);
+        Debug.Log("Default RootPathReal: " + DocumentInDefaultPath.RootPath);
+        Debug.Log("Default RootPathExp : " + Application.persistentDataPath + "/");
+        Debug.Log("Change  RootPathReal: " + DocumentInChangePath.RootPath);
+        Debug.Log("Change  RootPathExp : " + Application.persistentDataPath + "/OtherPath/");
         Assert.IsTrue(DocumentInDefaultPath.RootPath == Application.persistentDataPath + "/");
         Assert.IsTrue(DocumentInChangePath.RootPath == Application.persistentDataPath + "/OtherPath/");
 
         // Check Location
         Debug.Log("Default Location: " + DocumentInDefaultPath.Location);
         Debug.Log("Change  Location: " + DocumentInChangePath.Location);
-        Assert.IsTrue(DocumentInDefaultPath.Location == "/DalilaDB/DalilaDocuments/DocumentInDefaultPath/");
-        Assert.IsTrue(DocumentInChangePath.Location == "/DalilaDB/DalilaDocuments/DocumentInChangePath/");
+        Assert.IsTrue(DocumentInDefaultPath.Location == "/DalilaDB/DalilaDocuments/DalilaDocument_A0Basics.DocumentInDefaultPath/");
+        Assert.IsTrue(DocumentInChangePath.Location == "/DalilaDB/DalilaDocuments/DalilaDocument_A0Basics.DocumentInChangePath/");
 
         // Check ResourceLocation
         Debug.Log("Default ResourceLocation: " + DocumentInDefaultPath.ResourceLocation);
         Debug.Log("Change  ResourceLocation: " + DocumentInChangePath.ResourceLocation);
-        Assert.IsTrue(DocumentInDefaultPath.ResourceLocation == "/DalilaDB/DalilaDocuments/DocumentInDefaultPath/DocumentInDefaultPath.xml");
-        Assert.IsTrue(DocumentInChangePath.ResourceLocation == "/DalilaDB/DalilaDocuments/DocumentInChangePath/DocumentInChangePath.xml");
+        Assert.IsTrue(DocumentInDefaultPath.ResourceLocation == "/DalilaDB/DalilaDocuments/DalilaDocument_A0Basics.DocumentInDefaultPath/DocumentInDefaultPath.xml");
+        Assert.IsTrue(DocumentInChangePath.ResourceLocation == "/DalilaDB/DalilaDocuments/DalilaDocument_A0Basics.DocumentInChangePath/DocumentInChangePath.xml");
 
         // Check LocationPath
         Debug.Log("Default LocationPath: " + DocumentInDefaultPath.LocationPath);
         Debug.Log("Change  LocationPath: " + DocumentInChangePath.LocationPath);
-        Assert.IsTrue(DocumentInDefaultPath.LocationPath == Application.persistentDataPath + "/DalilaDB/DalilaDocuments/DocumentInDefaultPath/");
-        Assert.IsTrue(DocumentInChangePath.LocationPath == Application.persistentDataPath + "/OtherPath/DalilaDB/DalilaDocuments/DocumentInChangePath/");
+        Assert.IsTrue(DocumentInDefaultPath.LocationPath == Application.persistentDataPath + "/DalilaDB/DalilaDocuments/DalilaDocument_A0Basics.DocumentInDefaultPath/");
+        Assert.IsTrue(DocumentInChangePath.LocationPath == Application.persistentDataPath + "/OtherPath/DalilaDB/DalilaDocuments/DalilaDocument_A0Basics.DocumentInChangePath/");
 
         // Check ResourcePath
         Debug.Log("Default ResourcePath: " + DocumentInDefaultPath.ResourcePath);
         Debug.Log("Change  ResourcePath: " + DocumentInChangePath.ResourcePath);
-        Assert.IsTrue(DocumentInDefaultPath.ResourcePath == Application.persistentDataPath + "/DalilaDB/DalilaDocuments/DocumentInDefaultPath/DocumentInDefaultPath.xml");
-        Assert.IsTrue(DocumentInChangePath.ResourcePath == Application.persistentDataPath + "/OtherPath/DalilaDB/DalilaDocuments/DocumentInChangePath/DocumentInChangePath.xml");
+        Assert.IsTrue(DocumentInDefaultPath.ResourcePath == Application.persistentDataPath + "/DalilaDB/DalilaDocuments/DalilaDocument_A0Basics.DocumentInDefaultPath/DocumentInDefaultPath.xml");
+        Assert.IsTrue(DocumentInChangePath.ResourcePath == Application.persistentDataPath + "/OtherPath/DalilaDB/DalilaDocuments/DalilaDocument_A0Basics.DocumentInChangePath/DocumentInChangePath.xml");
 
     }
 
