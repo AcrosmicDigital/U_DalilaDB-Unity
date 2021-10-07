@@ -1,6 +1,6 @@
 <img src="https://images4public4ccess.s3.amazonaws.com/DalilaDB/DalilaDB-Logob.png" width="100">
 
-# DalilaDB for Unity
+# U DalilaDB for Unity
 
 A document based NoSql database for use in local applications that can store data in disk or in memory.
 
