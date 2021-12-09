@@ -5,7 +5,7 @@ using U.DalilaDB;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class TimeLapseTest
+public class CustomType_TimeLapse
 {
 
 

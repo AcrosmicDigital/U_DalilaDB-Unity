@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 
-public class DalilaDB_Secret
+public class CustomType_Secret
 {
 
     #region Example classes
@@ -68,6 +68,23 @@ public class DalilaDB_Secret
 
 
     [Test]
+    public void A000_SecretSimplePasses()
+    {
+        var ss = new Secret("Hola");
+        Secret sp = "Hola";
+        Secret sd = "Adios";
+
+        Debug.Log("s1: " + ss);
+        Debug.Log("s2: " + sp);
+        Debug.Log("s3: " + sd);
+
+        Assert.IsTrue(ss == sp);
+        Assert.IsFalse(ss == sd);
+
+    }
+
+
+    [Test]
     public void A000_Save_TwoHashedElements()
     {
 
@@ -86,8 +103,8 @@ public class DalilaDB_Secret
         Assert.IsTrue(readOpp);
 
         // Compare Secrets
-        Assert.IsTrue(readOpp.Data.Compare("PasswordInPlainText"));
-        Assert.IsFalse(readOpp.Data.Compare("ThisIs not the pasword"));
+        Assert.IsTrue(readOpp.Data == "PasswordInPlainText");
+        Assert.IsFalse(readOpp.Data == "ThisIs not the pasword");
 
     }
 
@@ -108,8 +125,8 @@ public class DalilaDB_Secret
         Assert.IsTrue(readOpp);
 
         // Compare Secrets
-        Assert.IsTrue(readOpp.Data.password.Compare("PasswordInPlainText"));
-        Assert.IsFalse(readOpp.Data.password.Compare("ThisIs not the pasword"));
+        Assert.IsTrue(readOpp.Data.password == "PasswordInPlainText");
+        Assert.IsFalse(readOpp.Data.password == "ThisIs not the pasword");
 
     }
 
@@ -134,14 +151,14 @@ public class DalilaDB_Secret
         Assert.IsTrue(readOpp2);
 
         // Compare Secrets of User One
-        Assert.IsTrue(readOpp1.Data.password.Compare("PasswordInPlainTextOne"));
-        Assert.IsFalse(readOpp1.Data.password.Compare("PasswordInPlainTextTwo"));
-        Assert.IsFalse(readOpp1.Data.password.Compare("ThisIs not the pasword"));
+        Assert.IsTrue(readOpp1.Data.password == "PasswordInPlainTextOne");
+        Assert.IsFalse(readOpp1.Data.password == "PasswordInPlainTextTwo");
+        Assert.IsFalse(readOpp1.Data.password == "ThisIs not the pasword");
 
         // Compare Secrets of User Two
-        Assert.IsFalse(readOpp2.Data.password.Compare("PasswordInPlainTextOne"));
-        Assert.IsTrue(readOpp2.Data.password.Compare("PasswordInPlainTextTwo"));
-        Assert.IsFalse(readOpp2.Data.password.Compare("ThisIs not the pasword"));
+        Assert.IsFalse(readOpp2.Data.password == "PasswordInPlainTextOne");
+        Assert.IsTrue(readOpp2.Data.password == "PasswordInPlainTextTwo");
+        Assert.IsFalse(readOpp2.Data.password == "ThisIs not the pasword");
 
     }
 
