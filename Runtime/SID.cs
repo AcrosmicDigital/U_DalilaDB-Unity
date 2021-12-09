@@ -6,7 +6,7 @@ using System;
 
 namespace U.DalilaDB
 {
-    [DataContract(Name = "SID", Namespace = "http://www.sacrum.com")]
+    [DataContract(Name = "SID")]
     public sealed class SID
     {
         [DataMember()]

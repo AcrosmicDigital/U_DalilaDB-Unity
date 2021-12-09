@@ -6,7 +6,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 
 [CustomEditor(typeof(DalilaDBTest))]
-public class DalilaDBTestInspectorExtension : Editor
+internal class DalilaDBTestInspectorExtension : Editor
 {
     public override void OnInspectorGUI()
     {

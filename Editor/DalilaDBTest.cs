@@ -1,7 +1,7 @@
 using UnityEngine;
 using U.DalilaDB;
 
-public class DalilaDBTest : MonoBehaviour
+internal class DalilaDBTest : MonoBehaviour
 {
     public class DalilaElementsTest : DalilaDBElements<DalilaElementsTest> { protected override string rootPath_ => Application.persistentDataPath; }
     public class DalilaVolatileElementsTest : DalilaDBVolatileElements<DalilaVolatileElementsTest> { }
