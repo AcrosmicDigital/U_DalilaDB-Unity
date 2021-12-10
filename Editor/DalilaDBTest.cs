@@ -17,7 +17,7 @@ internal class DalilaDBTest : MonoBehaviour
 
         Debug.Log("DalilaDB: Starting Test . Remove in final version");
 
-        var opp = DalilaElementsTest.Save("Number", 77);
+        var opp = DalilaElementsTest.Save("Number", 77)  ; 
         Debug.Log("DalilaDBElements: Saved Int: " + opp);
         if (!opp) Debug.LogError("DalilaDBElements: Error saving: " + opp.Error);
 
