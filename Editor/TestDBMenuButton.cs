@@ -17,7 +17,7 @@ public class TestDBMenuButton : EditorWindow
     public class DalilaVolatileElementsTest : DalilaDBVolatileElements<DalilaVolatileElementsTest> { }
 
 
-    [MenuItem("U/DalilaDB/Do Test")]
+    [MenuItem("U/DalilaDB/Test")]
     public static void ShowWindow()
     {
         DalilaElementsTest.DeleteAll();
