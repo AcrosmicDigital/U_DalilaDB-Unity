@@ -1,20 +1,17 @@
 using UnityEngine;
 using UnityEditor;
 
-
-#if UNITY_EDITOR
-
-public class VersionMenuButton : EditorWindow
+namespace U.DalilaDB.Editor
 {
-
-    [MenuItem("U/DalilaDB/Version")]
-    public static void PrintVersion()
+    public class VersionMenuButton : EditorWindow
     {
-        
-        Debug.Log(" U Framework: DalilaDB v1.0.0 for Unity");
-         
+
+        [MenuItem("Universal/DalilaDB/Version")]
+        public static void PrintVersion()
+        {
+
+            Debug.Log(" U Framework: DalilaDB v1.0.0 for Unity");
+
+        }
     }
 }
-
-
-#endif
