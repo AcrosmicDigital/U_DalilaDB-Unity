@@ -7,7 +7,7 @@ namespace U.Reactor.Editor
     {
 
         #region File
-        private static string DefaultFolderName => "/Scripts/Controllers/";
+        private static string DefaultFolderName => "/Scripts/Control/";
         private static string DefaultFileName => "NewAPI";
         private static string CustomExtension => "api.controller";
         static string[] File(string fileName) => new string[]
