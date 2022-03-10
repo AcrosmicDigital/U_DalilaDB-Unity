@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using UnityEngine;
-
 
 namespace U.DalilaDB
 {
@@ -12,12 +8,13 @@ namespace U.DalilaDB
     {
         [DataMember()]
         private uint seconds_;
-        public uint seconds { 
-            get 
-            { 
-                return seconds_; 
-            } 
-            set 
+        public uint seconds
+        {
+            get
+            {
+                return seconds_;
+            }
+            set
             {
                 seconds_ = value;
 
@@ -26,7 +23,7 @@ namespace U.DalilaDB
                     minutes++;
                     seconds_ -= 60;
                 }
-            } 
+            }
         }
 
         [DataMember()]
@@ -129,7 +126,7 @@ namespace U.DalilaDB
 
         public override bool Equals(object obj)
         {
-            if((obj == null) || !this.GetType().Equals(obj.GetType()))
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
             {
                 return false;
             }
@@ -148,7 +145,7 @@ namespace U.DalilaDB
             return false;
         }
 
-        public static bool operator==(TimeLapse obj1, TimeLapse obj2)
+        public static bool operator ==(TimeLapse obj1, TimeLapse obj2)
         {
             var equals = true;
 
@@ -171,7 +168,7 @@ namespace U.DalilaDB
             return equals;
         }
 
-        public static bool operator!=(TimeLapse obj1, TimeLapse obj2)
+        public static bool operator !=(TimeLapse obj1, TimeLapse obj2)
         {
             return !(obj1 == obj2);
         }
@@ -180,23 +177,47 @@ namespace U.DalilaDB
         {
 
             if (obj1.years > obj2.years) return true;
+            else if (obj1.years < obj2.years) return false;
+
             if (obj1.months > obj2.months) return true;
+            else if (obj1.months < obj2.months) return false;
+
             if (obj1.days > obj2.days) return true;
+            else if (obj1.days < obj2.days) return false;
+
             if (obj1.hours > obj2.hours) return true;
+            else if (obj1.hours < obj2.hours) return false;
+
             if (obj1.minutes > obj2.minutes) return true;
+            else if (obj1.minutes < obj2.minutes) return false;
+
             if (obj1.seconds > obj2.seconds) return true;
+            else if (obj1.seconds < obj2.seconds) return false;
+
             return false;
 
         }
 
         public static bool operator <(TimeLapse obj1, TimeLapse obj2)
         {
-            if (obj1.years < obj2.years) return true;
-            if (obj1.months < obj2.months) return true;
-            if (obj1.days < obj2.days) return true;
-            if (obj1.hours < obj2.hours) return true;
-            if (obj1.minutes < obj2.minutes) return true;
-            if (obj1.seconds < obj2.seconds) return true;
+            if (obj1.years > obj2.years) return false;
+            else if (obj1.years < obj2.years) return true;
+
+            if (obj1.months > obj2.months) return false;
+            else if (obj1.months < obj2.months) return true;
+
+            if (obj1.days > obj2.days) return false;
+            else if (obj1.days < obj2.days) return true;
+
+            if (obj1.hours > obj2.hours) return false;
+            else if (obj1.hours < obj2.hours) return true;
+
+            if (obj1.minutes > obj2.minutes) return false;
+            else if (obj1.minutes < obj2.minutes) return true;
+
+            if (obj1.seconds > obj2.seconds) return false;
+            else if (obj1.seconds < obj2.seconds) return true;
+
             return false;
         }
 
@@ -252,6 +273,20 @@ namespace U.DalilaDB
             };
         }
 
+        public static implicit operator TimeLapse(System.DateTime dateTime)
+        {
+
+            return new TimeLapse
+            {
+                seconds = (uint)dateTime.Second,
+                minutes = (uint)dateTime.Minute,
+                hours = (uint)dateTime.Hour,
+                days = (uint)dateTime.Day,
+                months = (uint)dateTime.Month,
+                years = (uint)dateTime.Year,
+            };
+        }
+
         public static implicit operator uint(TimeLapse tl)
         {
             return
@@ -259,7 +294,7 @@ namespace U.DalilaDB
                 (tl.minutes * 60) +
                 (tl.hours * 3600) +
                 (tl.days * 86400) +
-                (tl.months * 2592000)+
+                (tl.months * 2592000) +
                 (tl.years * 31104000);
         }
 
